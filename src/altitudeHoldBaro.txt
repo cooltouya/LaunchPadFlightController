@@ -1,0 +1,22 @@
+static float baro_noise_lpf = 0.6f;
+static float baroAltitude;
+float baroAltitudeTmp = bmp180->absoluteAltitude - bmp180->groundAltitude;
+baroAltitude = baroAltitude * baro_noise_lpf + baroAltitudeTmp * (1.0f - baro_noise_lpf); // LPF to reduce baro noise
+
+// TODO: Smooth mpu6500->accFiltered.axis.Z even more
+
+/*static float accZsum, timeStart;
+static uint32_t sumCount;
+if (timeStart == 0) // The start time has not been set yet
+    timeStart = micros();
+
+accZsum += mpu6500->accFiltered.axis.Z;
+
+
+accVelocity = accZsum
+
+return baroAltitude;*/
+
+//mpu6500->accScaleFactor
+
+//accVelScale = 9.80665f / acc_1G / 10000.0f;

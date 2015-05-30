@@ -28,6 +28,7 @@ extern "C" {
 
 typedef struct {
     sensorRaw_t acc, gyro; // Raw accelerometer and gyroscope readings
+    sensor_t accFiltered; // Accelerometer values after low pass filter
     float accScaleFactor, gyroScaleFactor; // Gyroscope and accelerometer scale factor
     angle_t gyroRate; // Gyroscope readings in deg/s
 } mpu6500_t;
