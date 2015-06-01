@@ -104,11 +104,18 @@ float updateAltitudeHold(angle_t *angle, mpu6500_t *mpu6500, float throttle, flo
 
         altHoldThrottle = altHoldThrottle * (1.0f - (1.0f / throttle_noise_lpf)) + throttle * (1.0f / throttle_noise_lpf); // LPF throttle input
 
-        float setPoint;
+        float setPointTemp;
         if (altHoldThrottle < altHoldInitialThrottle)
-            setPoint = mapf(altHoldThrottle, MIN_MOTOR_OUT, altHoldInitialThrottle, SONAR_MIN_DIST, altHoldSetPoint);
+            setPointTemp = mapf(altHoldThrottle, MIN_MOTOR_OUT, altHoldInitialThrottle, SONAR_MIN_DIST, altHoldSetPoint);
         else
-            setPoint = mapf(altHoldThrottle, altHoldInitialThrottle, MAX_MOTOR_OUT, altHoldSetPoint, SONAR_MAX_DIST);
+            setPointTemp = mapf(altHoldThrottle, altHoldInitialThrottle, MAX_MOTOR_OUT, altHoldSetPoint, SONAR_MAX_DIST);
+
+        // Apply deadband
+        static float setPoint;
+        if (setPointTemp - setPoint > 10)
+            setPoint = setPointTemp - 10;
+        else if (setPointTemp - setPoint < -10)
+            setPoint = setPointTemp + 10;
 
         float altHoldOut = updatePID(&pidAltHold, setPoint, distance, dt);
         static const float MIN_MOTOR_OFFSET = (MAX_MOTOR_OUT - MIN_MOTOR_OUT) * 0.05f; // Add 5% to minimum, so the motors are never completely shut off
